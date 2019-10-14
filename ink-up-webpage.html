@@ -1,0 +1,87 @@
+<html>
+
+<head> 
+<style>
+body, html {
+	height: 100%;
+	font-family: sans-serif;
+	color: grey;
+}
+</style>
+
+<script type="text/javascript">
+data: any = "";
+name: any = "";
+location: any = "";
+var myObj, txt = "";
+	function inkcallmethod(){
+	var url = 'http://ink-up-api.herokuapp.com/inkup/getDataAll';
+    var xhr  = new XMLHttpRequest()
+	xhr.open('GET', url, true)
+	xhr.onload = function () {
+	var users = JSON.parse(xhr.responseText);
+	myObj = JSON.parse(xhr.responseText);
+	if (xhr.readyState == 4 && xhr.status == "200") {
+		console.table(users);
+		
+		txt += "<table border='0.7'> <tr><th style=\"text-align: left\">Company name</th><th>Location</th></tr>"
+      for (x in myObj) {
+        txt += "<tr><td>" + myObj[x].name + "</td> <td>"+ myObj[x].location + "</td></tr>";
+      }
+      txt += "</table>"    
+      document.getElementById("demo").innerHTML = txt;
+	} else {
+		console.error(users);
+	}
+}
+xhr.send(null);
+	}
+	
+	body: any = "";
+	name: string = "";
+	location: string = "";
+	jsonstring: string = "";
+
+
+function insertData(name, location) {
+var url = "http://ink-up-api.herokuapp.com/inkup/insertData";
+
+var data = {};
+data.name = "Indigo Inks";
+data.location  = "Mumbai";
+var json = JSON.stringify(data);
+var xhr = new XMLHttpRequest();
+xhr.open("PUT", url, true);
+xhr.setRequestHeader('Content-type','application/json; charset=utf-8');
+xhr.onload = function () {
+	var items = JSON.parse(xhr.responseText);
+	if (xhr.readyState == 4 && xhr.status == "201") {
+		console.table(items);
+	} else {
+		console.error(items);
+	}
+}
+xhr.send(json);
+}
+
+</script>
+
+</head>
+<body>
+<marquee>INKUP API</marquee>
+<button id="myBtn" onclick="inkcallmethod()" >View All Data</button>
+<br>
+<br>
+<div style="align: center">  
+name: <input type="text" placeholder="Company name"><br><br>
+location: <input type="text" placeholder="Location"><br>
+</div>
+
+<button onclick="insertData(document.getElementById('name'),document.getElementById('location'))">Insert</button>
+
+
+
+<p id="demo"></p>
+
+</body>
+</html>
